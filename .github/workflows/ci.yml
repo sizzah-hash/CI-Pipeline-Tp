@@ -61,4 +61,3 @@ jobs:
           run: pip install -r requirements.txt
         - name: lances les tests
           run: PYTHONPATH=$PYTHONPATH:. pytest tests/ -v --cov=app
-  
