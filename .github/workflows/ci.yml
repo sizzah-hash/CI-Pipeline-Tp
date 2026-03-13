@@ -8,6 +8,27 @@ on:
   workflow_dispatch:
 
 jobs:
+
+  build :
+    runs-on : ubuntu-latest
+    steps :  
+      - name : Recuperer le code
+        uses : actions/checkout@v4
+      - name : Installer python
+        uses : actions/setup-python@v5
+        with :
+          python-version : "3.11"
+
+      - name : Installer les dépendances 
+        run : pip install -r requirements.txt
+      - name : flake8
+        run : |
+          flake8 app --count --select=E9,F63,F7,F82,F841 --show-source --statistics
+          flake8 app --count --max-complexity=10 --max-line-length=127 --statistics
+          flake8 tests --count --max-line-length=127 --statistics
+
+      - name : lancer les tests
+        run : PYTHONPATH=. pytest -v --cov=app
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -40,3 +61,4 @@ jobs:
           run: pip install -r requirements.txt
         - name: lances les tests
           run: PYTHONPATH=$PYTHONPATH:. pytest tests/ -v --cov=app
+  
