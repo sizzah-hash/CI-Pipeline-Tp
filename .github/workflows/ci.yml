@@ -41,18 +41,28 @@ jobs:
       - name: lances les tests
         run: PYTHONPATH=$PYTHONPATH:. pytest tests/ -v --cov=app
   build:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - name: Recuperer le code
-        uses: actions/checkout@v4
-      - name: Installer python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - name: Installer les dépendances
-        run: pip install -r requirements.txt
-      - name:
-        run: python -m build
-      - name: upload
-        run: actions/upload-artifact@v6
+  runs-on: ubuntu-latest
+  needs: test
+
+  steps:
+    - name: Recuperer le code
+      uses: actions/checkout@v4
+
+    - name: Installer python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Installer les dépendances
+      run: |
+        pip install -r requirements.txt
+        pip install build
+
+    - name: Build package
+      run: python -m build
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: package
+        path: dist/
